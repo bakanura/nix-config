@@ -125,6 +125,8 @@ hardware.bluetooth.settings = {
     powertop.enable = true;
   };
 
+
+
   # Enable thermal data
   services.thermald.enable = true;
 
@@ -138,6 +140,16 @@ hardware.bluetooth.settings = {
   '';
   security.polkit.enable = true;
 
+  boot.kernelModules = [ "iwlwifi" ];
+  hardware.enableRedistributableFirmware = true;
+  hardware.enableAllFirmware = true;
+  nixpkgs.config.allowUnfree = true;
+
+  networking.wireless.enable = true;
+  networking.wireless.userControlled.enable = true;
+  networking.useDHCP = false;
+  # This is the interface for the usb-wifi stick (created when I generated configuration.nix)
+  networking.interfaces.wlp0s20f0u1.useDHCP = true;
   
   services.rpcbind.enable = true; # needed for NFS
 
