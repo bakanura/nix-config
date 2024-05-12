@@ -143,12 +143,6 @@ hardware.bluetooth.settings = {
   boot.kernelModules = [ "iwlwifi" ];
   hardware.enableRedistributableFirmware = true;
   hardware.enableAllFirmware = true;
-
-  networking.wireless.enable = true;
-  networking.wireless.userControlled.enable = true;
-  networking.useDHCP = false;
-  # This is the interface for the usb-wifi stick (created when I generated configuration.nix)
-  networking.interfaces.wlp0s20f0u1.useDHCP = true;
   
   services.rpcbind.enable = true; # needed for NFS
 
