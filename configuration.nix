@@ -23,7 +23,7 @@ in
 {
   imports =
   [ # include the results of the hardware scan.
-    <nixos-hardware/framework/13-inch/7040-amd>
+    #<nixos-hardware/framework/13-inch/7040-amd>
     ./hardware-configuration.nix
   ];
 
