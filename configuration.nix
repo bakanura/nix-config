@@ -3,11 +3,27 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, lib, inputs, ... }:
+let
+# add unstable channel declaratively
+  unstableTarball =
+    builtins.fetchTarball
+      "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
 
+  hardwareTarball =
+   fetchTarball {
+      url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
+      hash = "";
+   };
+  HardwareURL =
+   fetchurl {
+		url = "https://www.synaptics.com/sites/default/files/exe_files/2023-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu5.8-EXE.zip";
+		hash = "";
+   };
+in
 {
   imports =
   [ # include the results of the hardware scan.
-    #<nixos-hardware/framework/13-inch/7040-amd>
+    <nixos-hardware/framework/13-inch/7040-amd>
     ./hardware-configuration.nix
   ];
 
