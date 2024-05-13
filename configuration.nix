@@ -11,7 +11,7 @@ let
 
   nixos-hardware = builtins.fetchTarball {
         url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
-        sha256 = "";
+        sha256 = "sha256:188r4q1sv19paa85spwcb634g9mllxd7bmn8335lvmrp2r7n674m";
   };
 
   # HardwareURL =
@@ -111,7 +111,7 @@ hardware.bluetooth.settings = {
 
   programs.bash.shellAliases = { mixer = "pulsemixer"; };
   # Enable touchpad support (enabled default in most desktopManager).
-  services.libinput.enable = true;
+  services.xserver.libinput.enable = true;
 
   # Fingerprint with fprintd
   #services.fprintd.enable = true;
