@@ -160,7 +160,7 @@ hardware.bluetooth.settings = {
   hardware.logitech.wireless.enable = true;
   hardware.logitech.wireless.enableGraphical = true;
 
-    # Enable automatic login for the user.
+  # Enable automatic login for the user.
   services.xserver.displayManager.autoLogin.enable = true;
   services.xserver.displayManager.autoLogin.user = "bakanura";
 
