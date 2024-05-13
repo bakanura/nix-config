@@ -209,7 +209,7 @@ hardware.bluetooth.settings = {
         fwupd
         obs-studio
         unstable.v4l-utils
-        unstable.buttercup-desktop
+        buttercup-desktop
         unstable.keepass
         git
         rpi-imager
