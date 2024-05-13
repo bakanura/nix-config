@@ -2,36 +2,14 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, fetchurl, fetchTarball, ... }:
-let
-# add unstable channel declaratively
-  unstableTarball =
-    builtins.fetchTarball
-      "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+{ config, pkgs, ... }:
 
-  hardwareTarball =
-      builtins.fetchTarball
-	"https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
-
-  HardwareURL =
-   builtins.fetchurl
-	"https://www.synaptics.com/sites/default/files/exe_files/2023-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu5.8-EXE.zip";
-	
-in
 {
   imports =
   [ # include the results of the hardware scan.
     #<nixos-hardware/framework/13-inch/7040-amd>
     ./hardware-configuration.nix
   ];
-
-  nixpkgs.config = {
-    packageOverrides = pkgs: {
-      unstable = import unstableTarball {
-        config = config.nixpkgs.config;
-      };
-    };
-  };
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
@@ -190,26 +168,26 @@ hardware.bluetooth.settings = {
         notesnook
         joplin-desktop
         android-tools
-        unstable.droidcam	
+        droidcam	
         lutris
-        unstable.wine
+        wine
         discord
-        unstable.steam
+        steam
         thunderbird
-        unstable.vscode
-        unstable.terraform
+        vscode
+        terraform
         pulseaudioFull
         # Console mixer
-        unstable.pulsemixer
+        pulsemixer
         # Equalizer on sterids
-        unstable.easyeffects
-        unstable.ldacbt
-        unstable.fprintd
+        easyeffects
+        ldacbt
+        fprintd
         fwupd
         obs-studio
-        unstable.v4l-utils
+        v4l-utils
         buttercup-desktop
-        unstable.keepass
+        keepass
         git
         rpi-imager
         angryipscanner
