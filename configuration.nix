@@ -2,35 +2,28 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, fetchurl, fetchTarball, ... }:
 let
 # add unstable channel declaratively
   unstableTarball =
-    fetchTarball 
+    builtins.fetchTarball
       "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-
-  nixos-hardware = builtins.fetchTarball {
-        url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
-        sha256 = "sha256:188r4q1sv19paa85spwcb634g9mllxd7bmn8335lvmrp2r7n674m";
-  };
-
-  # HardwareURL =
-  #  fetchurl {
-	# 	url = "https://www.synaptics.com/sites/default/files/exe_files/2023-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu5.8-EXE.zip";
-	# 	hash = "";
-  #  };
 in
 {
   imports =
   [ # include the results of the hardware scan.
-    "${nixos-hardware}/framework/13-inch/7040-amd"
+    <nixos-hardware/framework/13-inch/7040-amd>
     ./hardware-configuration.nix
   ];
 
-  # nix.settings = {
-  #   experimental-features = [ "nix-command"  ];
-  # };
-
+  nixpkgs.config = {
+    packageOverrides = pkgs: {
+      unstable = import unstableTarball {
+        config = config.nixpkgs.config;
+      };
+    };
+  };
+  
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -65,9 +58,9 @@ in
   # Enable the X11 windowing system.
   services.xserver.enable = true;
   #Enable DisplayLink Drivers
-  #services.xserver = {
-	#videoDrivers =  [ "displaylink" "modesetting" ];
-  #};
+  services.xserver = {
+	videoDrivers =  [ "displaylink" "modesetting" ];
+  };
 
   # Enable firmware updates with fwupd
   services.fwupd.enable = true;
@@ -79,10 +72,8 @@ in
 
   # Configure keymap in X11
   services.xserver = {
-      xkb = {
-        layout = "de";
-        variant = "";
-    };
+    layout = "de";
+    xkbVariant = "";
   };
 
   # Configure console keymap
@@ -123,8 +114,6 @@ hardware.bluetooth.settings = {
     powertop.enable = true;
   };
 
-
-
   # Enable thermal data
   services.thermald.enable = true;
 
@@ -138,9 +127,6 @@ hardware.bluetooth.settings = {
   '';
   security.polkit.enable = true;
 
-  boot.kernelModules = [ "iwlwifi" ];
-  hardware.enableRedistributableFirmware = true;
-  hardware.enableAllFirmware = true;
   
   services.rpcbind.enable = true; # needed for NFS
 
@@ -186,26 +172,26 @@ hardware.bluetooth.settings = {
         notesnook
         joplin-desktop
         android-tools
-        droidcam	
+        unstable.droidcam	
         lutris
-        wine
+        unstable.wine
         discord
-        #steam
+        unstable.steam
         thunderbird
-        vscode
-        terraform
+        unstable.vscode
+        unstable.terraform
         pulseaudioFull
         # Console mixer
-        pulsemixer
+        unstable.pulsemixer
         # Equalizer on sterids
-        easyeffects
-        ldacbt
-        fprintd
+        unstable.easyeffects
+        unstable.ldacbt
+        unstable.fprintd
         fwupd
         obs-studio
-        v4l-utils
-        buttercup-desktop
-        keepass
+        unstable.v4l-utils
+        unstable.buttercup-desktop
+        unstable.keepass
         git
         rpi-imager
         angryipscanner
@@ -219,9 +205,9 @@ hardware.bluetooth.settings = {
   nixpkgs.config.allowUnfree = true;
 
   # Enable and install Steam + prerequisities
-  #hardware.steam-hardware = {
-   # enable = true;
-  #};
+  hardware.steam-hardware = {
+    enable = true;
+  };
 
   programs.steam = {
     enable = true;
