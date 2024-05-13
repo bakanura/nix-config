@@ -1,10 +1,10 @@
 # main-user.nix
 
-{lib, config, pkgs, ...}
+{lib, config, pkgs, ...}:
 
 {
   options = {
-    main-user.Enable
+    main-user.enable
      = lib.mkEnableOption "eanable user module";
 
     main-user.userName = lib.mkOption {
@@ -23,4 +23,4 @@ config = lib.mkIf config.main-user.enable {
     shell = pkgs.zsh;
     };
   };
-};
+}
