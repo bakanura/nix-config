@@ -8,12 +8,18 @@ let
   unstableTarball =
     builtins.fetchTarball
       "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+
+  hardwareFramework = builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
+    sha256 = "sha256:188r4q1sv19paa85spwcb634g9mllxd7bmn8335lvmrp2r7n674m";
+  };
+
 in
 {
   imports =
   [ # include the results of the hardware scan.
-    <nixos-hardware/framework/13-inch/7040-amd>
-    ./hardware-configuration.nix
+  (import "${hardwareFramework}/framework/13-inch/7040-amd")
+  ./hardware-configuration.nix
   ];
 
   nixpkgs.config = {
