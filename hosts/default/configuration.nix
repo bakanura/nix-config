@@ -9,7 +9,6 @@
   [ # include the results of the hardware scan.
     #<nixos-hardware/framework/13-inch/7040-amd>
     ./hardware-configuration.nix
-    ./main-user.nix
   ];
 
   nix.settings = {
@@ -175,7 +174,7 @@ hardware.bluetooth.settings = {
         lutris
         wine
         discord
-        steam
+        #steam
         thunderbird
         vscode
         terraform
@@ -212,9 +211,9 @@ hardware.bluetooth.settings = {
   nixpkgs.config.allowUnfree = true;
 
   # Enable and install Steam + prerequisities
-  hardware.steam-hardware = {
-    enable = true;
-  };
+  #hardware.steam-hardware = {
+   # enable = true;
+  #};
 
   programs.steam = {
     enable = true;

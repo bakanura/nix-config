@@ -21,7 +21,28 @@
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
-
+    pkgs.nfs-utils
+	pkgs.firefox
+	(pkgs.wrapFirefox (pkgs.firefox-unwrapped.override { pipewireSupport = true;}) {})
+	pkgs.android-tools
+	pkgs.droidcam
+	pkgs.v4l-utils
+	pkgs.angryipscanner
+  pkgs.ldacbt
+	pkgs.fprintd
+	pkgs.fwupd
+	pkgs.obs-studio
+	pkgs.buttercup-desktop
+	pkgs.joplin-desktop  	
+	pkgs.git
+	pkgs.libnfs
+  pkgs.rpi-imager
+  pkgs.ventoy-full
+	pkgs.go
+	pkgs.pulseaudioFull
+	pkgs.notesnook
+  pkgs.drawio
+  pkgs.libreoffice
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
