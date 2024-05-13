@@ -6,30 +6,30 @@
 let
 # add unstable channel declaratively
   unstableTarball =
-    builtins.fetchTarball
+    fetchTarball 
       "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
 
-  hardwareTarball =
-   fetchTarball {
-      url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
-      hash = "";
-   };
-  HardwareURL =
-   fetchurl {
-		url = "https://www.synaptics.com/sites/default/files/exe_files/2023-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu5.8-EXE.zip";
-		hash = "";
-   };
+  nixos-hardware = builtins.fetchTarball {
+        url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
+        sha256 = "";
+  };
+
+  # HardwareURL =
+  #  fetchurl {
+	# 	url = "https://www.synaptics.com/sites/default/files/exe_files/2023-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu5.8-EXE.zip";
+	# 	hash = "";
+  #  };
 in
 {
   imports =
   [ # include the results of the hardware scan.
-    <nixos-hardware/framework/13-inch/7040-amd>
+    "${nixos-hardware}/framework/13-inch/7040-amd"
     ./hardware-configuration.nix
   ];
 
-  nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-  };
+  # nix.settings = {
+  #   experimental-features = [ "nix-command"  ];
+  # };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -213,14 +213,6 @@ hardware.bluetooth.settings = {
         libreoffice
         ventoy-full
     ];
-  };
-
-  home-manager = {
-    # also pass inputsd to home-manager modules
-    extraSpecialArgs = { inherit inputs; };
-    users = {
-      "bakanura" = import ./home.nix;
-    };
   };
 
   # Allow unfree packages
