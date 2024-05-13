@@ -2,13 +2,14 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib ... }:
 
 {
   imports =
   [ # include the results of the hardware scan.
     #<nixos-hardware/framework/13-inch/7040-amd>
     ./hardware-configuration.nix
+    ./main-user.nix
   ];
 
   nix.settings = {
