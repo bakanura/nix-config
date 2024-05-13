@@ -64,8 +64,10 @@
 
   # Configure keymap in X11
   services.xserver = {
-    layout = "de";
-    xkbVariant = "";
+      xkb = {
+        layout = "de";
+        variant = "";
+    };
   };
 
   # Configure console keymap
@@ -94,7 +96,7 @@ hardware.bluetooth.settings = {
 
   programs.bash.shellAliases = { mixer = "pulsemixer"; };
   # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
   # Fingerprint with fprintd
   #services.fprintd.enable = true;
