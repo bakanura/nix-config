@@ -198,6 +198,7 @@ hardware.bluetooth.settings = {
         drawio
         libreoffice
         ventoy-full
+        usbutils
     ];
   };
 
@@ -276,6 +277,7 @@ hardware.bluetooth.settings = {
 	pkgs.notesnook
   pkgs.drawio
   pkgs.libreoffice
+  pkgs.usbutils
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
