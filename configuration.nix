@@ -10,15 +10,13 @@ let
       "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
 
   hardwareTarball =
-   fetchTarball {
-      url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
-      hash = "";
-   };
+      builtins.fetchTarball
+	"https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
+
   HardwareURL =
-   fetchurl {
-		url = "https://www.synaptics.com/sites/default/files/exe_files/2023-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu5.8-EXE.zip";
-		hash = "";
-   };
+   builtins.fetchurl
+	"https://www.synaptics.com/sites/default/files/exe_files/2023-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu5.8-EXE.zip";
+	
 in
 {
   imports =
