@@ -69,9 +69,9 @@ in
   # Enable the X11 windowing system.
   services.xserver.enable = true;
   #Enable DisplayLink Drivers
-  services.xserver = {
-	videoDrivers =  [ "displaylink" "modesetting" ];
-  };
+  #services.xserver = {
+	#videoDrivers =  [ "displaylink" "modesetting" ];
+  #};
 
   # Enable firmware updates with fwupd
   services.fwupd.enable = true;
