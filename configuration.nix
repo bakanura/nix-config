@@ -108,12 +108,6 @@ hardware.bluetooth.settings = {
   #services.fprintd.enable = true;
   #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-vfs0090; #(If the vfs0090 Driver does not work, use the following driver)
 
-  # Powermanagement
-  powerManagement = {
-    enable = true;
-    powertop.enable = true;
-  };
-
   # Enable thermal data
   services.thermald.enable = true;
 
