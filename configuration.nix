@@ -200,6 +200,14 @@ hardware.bluetooth.settings = {
     ];
   };
 
+  home-manager = {
+    # also pass inputsd to home-manager modules
+    extraSpecialArgs = { inherit inputs; };
+    users = {
+      "bakanura" = import ./home.nix;
+    };
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
