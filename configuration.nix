@@ -139,7 +139,7 @@ hardware.bluetooth.settings = {
   device = "192.168.0.219:/mnt/irownwolf-2terra";
   fsType = "nfs";
   };
-
+  
   services.auto-cpufreq.enable = true;
   services.auto-cpufreq.settings = {
     battery = {
@@ -199,6 +199,7 @@ hardware.bluetooth.settings = {
         libreoffice
         ventoy-full
         usbutils
+        mullvad
     ];
   };
 
@@ -278,6 +279,7 @@ hardware.bluetooth.settings = {
   pkgs.drawio
   pkgs.libreoffice
   pkgs.usbutils
+  pkgs.mullvad
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
