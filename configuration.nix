@@ -135,7 +135,7 @@ hardware.bluetooth.settings = {
   kernelModules = [ "nfs" ];
   };
 
-  fileSystems."/mnt/terrabyte" = {
+  fileSystems."/mnt/irownwolf-2terra" = {
   device = "192.168.0.219:/mnt/irownwolf-2terra";
   fsType = "nfs";
   };
