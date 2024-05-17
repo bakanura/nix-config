@@ -135,10 +135,10 @@ hardware.bluetooth.settings = {
   kernelModules = [ "nfs" ];
   };
 
-  #fileSystems."/mnt/terrabyte" = {
-  #device = "192.168.0.146:/mnt/terrabyte";
-  #fsType = "nfs";
-  #};
+  fileSystems."/mnt/terrabyte" = {
+  device = "192.168.0.219:/mnt/irownwolf-2terra";
+  fsType = "nfs";
+  };
 
   services.auto-cpufreq.enable = true;
   services.auto-cpufreq.settings = {
