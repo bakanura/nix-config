@@ -200,6 +200,7 @@ hardware.bluetooth.settings = {
         nextcloud-client
         ungoogled-chromium
         opentabletdriver
+        aws-sso-cli
     ];
   };
 
@@ -289,6 +290,7 @@ hardware.bluetooth.settings = {
   pkgs.nextcloud-client
   pkgs.ungoogled-chromium
   pkgs.opentabletdriver
+  pks.aws-sso-cli
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
