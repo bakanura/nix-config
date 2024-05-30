@@ -11,7 +11,7 @@ let
 
   hardwareFramework = builtins.fetchTarball {
     url = "https://github.com/NixOS/nixos-hardware/archive/master.tar.gz";
-    sha256 = "sha256:188r4q1sv19paa85spwcb634g9mllxd7bmn8335lvmrp2r7n674m";
+    sha256 = "sha256:174wrxi6670lvx0z2yvq3kd3dvkbwb56fciv6zi5dznyfrxgfdx1";
   };
 
 in
@@ -36,12 +36,6 @@ in
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
   networking.networkmanager.enable = true;
 
   # Set your time zone.
@@ -135,11 +129,12 @@ hardware.bluetooth.settings = {
   kernelModules = [ "nfs" ];
   };
 
-  fileSystems."/mnt/irownwolf-2terra" = {
-  device = "192.168.0.219:/mnt/irownwolf-2terra";
+  fileSystems."/mnt/truenas/nfs" = {
+  device = "192.168.0.251:/mnt/truenas/nfs";
   fsType = "nfs";
+  options = [ "x-systemd.automount" "noauto" ];
   };
-  
+
   services.auto-cpufreq.enable = true;
   services.auto-cpufreq.settings = {
     battery = {
@@ -199,8 +194,17 @@ hardware.bluetooth.settings = {
         libreoffice
         ventoy-full
         usbutils
+        mullvad-vpn
         mullvad
+        krita
+        nextcloud-client
+        ungoogled-chromium
+        opentabletdriver
     ];
+  };
+
+    services.mullvad-vpn = {
+    enable = true;
   };
 
   # Allow unfree packages
@@ -250,6 +254,7 @@ hardware.bluetooth.settings = {
 	pkgs.libnfs
   pkgs.rpi-imager
   pkgs.ventoy-full
+  pkgs.krita
 	(pkgs.wrapOBS {
 	    	plugins = with pkgs.obs-studio-plugins; [
 	      	wlrobs
@@ -279,7 +284,11 @@ hardware.bluetooth.settings = {
   pkgs.drawio
   pkgs.libreoffice
   pkgs.usbutils
+  pkgs.mullvad-vpn
   pkgs.mullvad
+  pkgs.nextcloud-client
+  pkgs.ungoogled-chromium
+  pkgs.opentabletdriver
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
