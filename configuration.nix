@@ -290,7 +290,14 @@ hardware.bluetooth.settings = {
   pkgs.nextcloud-client
   pkgs.ungoogled-chromium
   pkgs.opentabletdriver
-  pks.aws-sso-cli
+  pkgs.aws-sso-cli
+  (pkgs.discord.override {
+  # remove any overrides that you don't want
+  withOpenASAR = true;
+  withVencord = true;
+})
+
+  pkgs.betterdiscordctl
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
