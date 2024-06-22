@@ -4,7 +4,7 @@
 
 { config, pkgs, fetchurl, fetchTarball, ... }:
 let
-# add unstable channel declaratively
+  # add unstable channel declaratively
   unstableTarball =
     builtins.fetchTarball
       "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
@@ -14,12 +14,23 @@ let
     sha256 = "sha256:174wrxi6670lvx0z2yvq3kd3dvkbwb56fciv6zi5dznyfrxgfdx1";
   };
 
+  nixpkgs = import (fetchTarball {
+    url = "https://releases.nixos.org/nixos/24.05/nixos-24.05.tar.xz";
+    sha256 = "";
+  }) 
+  {
+    config = {
+      allowUnfree = true;
+    };
+    system = builtins.currentSystem;
+  };
+
 in
 {
   imports =
   [ # include the results of the hardware scan.
-  (import "${hardwareFramework}/framework/13-inch/7040-amd")
-  ./hardware-configuration.nix
+    (import "${hardwareFramework}/framework/13-inch/7040-amd")
+    ./hardware-configuration.nix
   ];
 
   nixpkgs.config = {
@@ -35,7 +46,6 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
 
   # Set your time zone.
@@ -54,27 +64,39 @@ in
     LC_TELEPHONE = "de_DE.UTF-8";
     LC_TIME = "de_DE.UTF-8";
   };
+  
+  services.auto-cpufreq = {
+    enable = true;
+    settings = {
+      battery = {
+        governor = "powersave";
+        turbo = "never";
+      };
+      charger = {
+        governor = "performance";
+        turbo = "auto";
+      };
+    };
+  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  #Enable DisplayLink Drivers
-  services.xserver = {
-	videoDrivers =  [ "displaylink" "modesetting" ];
-  };
+  # Enable DisplayLink Drivers
+  services.xserver.videoDrivers = [ "displaylink" "modesetting" ];
 
   # Enable firmware updates with fwupd
-  services.fwupd.enable = true;
-  services.fwupd.extraRemotes = [ "lvfs-testing" ];
+  services.fwupd = {
+    enable = true;
+    extraRemotes = [ "lvfs-testing" ];
+  };
 
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
-  services.xserver = {
-    layout = "de";
-    xkbVariant = "";
-  };
+  services.xserver.layout = "de";
+  services.xserver.xkbVariant = "";
 
   # Configure console keymap
   console.keyMap = "de";
@@ -82,31 +104,29 @@ in
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-# Enable sound with pipewire.
-sound.enable = true;
-hardware.pulseaudio.enable = false;
-security.rtkit.enable = true;
-nixpkgs.config.pulseaudio = true;
-hardware.pulseaudio.extraConfig = "load-module module-combine-sink";
-services.pipewire = {
+  # Enable sound with pipewire.
+  sound.enable = true;
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  nixpkgs.config.pulseaudio = true;
+  hardware.pulseaudio.extraConfig = "load-module module-combine-sink";
+  services.pipewire = {
     enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
+    alsa = {
+      enable = true;
+      support32Bit = true;
+    };
     pulse.enable = true;
-};
-hardware.bluetooth.settings = {
-	General = {
-		Experimental = true;
-	};
-};
+  };
+  hardware.bluetooth.settings = {
+    General = {
+      Experimental = true;
+    };
+  };
 
   programs.bash.shellAliases = { mixer = "pulsemixer"; };
   # Enable touchpad support (enabled default in most desktopManager).
   services.xserver.libinput.enable = true;
-
-  # Fingerprint with fprintd
-  #services.fprintd.enable = true;
-  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-vfs0090; #(If the vfs0090 Driver does not work, use the following driver)
 
   # Enable thermal data
   services.thermald.enable = true;
@@ -121,39 +141,29 @@ hardware.bluetooth.settings = {
   '';
   security.polkit.enable = true;
 
-  
   services.rpcbind.enable = true; # needed for NFS
 
   boot.initrd = {
-  supportedFilesystems = [ "nfs" ];
-  kernelModules = [ "nfs" ];
+    supportedFilesystems = [ "nfs" ];
+    kernelModules = [ "nfs" ];
   };
 
   fileSystems."/mnt/truenas/nfs" = {
-  device = "192.168.0.251:/mnt/truenas/nfs";
-  fsType = "nfs";
-  options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  services.auto-cpufreq.enable = true;
-  services.auto-cpufreq.settings = {
-    battery = {
-     governor = "powersave";
-     turbo = "never";
-    };
-    charger = {
-     governor = "performance";
-     turbo = "auto";
-    };
+    device = "192.168.0.251:/mnt/truenas/nfs";
+    fsType = "nfs";
+    options = [ "x-systemd.automount" "noauto" ];
   };
 
   services.fprintd.enable = true;
 
-  security.pam.services.swaylock = {};
-  security.pam.services.swaylock.fprintAuth = true;
+  security.pam.services.swaylock = {
+    fprintAuth = true;
+  };
 
-  hardware.logitech.wireless.enable = true;
-  hardware.logitech.wireless.enableGraphical = true;
+  hardware.logitech.wireless = {
+    enable = true;
+    enableGraphical = true;
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.bakanura = {
@@ -161,60 +171,57 @@ hardware.bluetooth.settings = {
     description = "bakanura";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-        firefox
-        libnfs
-        nfs-utils
-        notesnook
-        joplin-desktop
-        android-tools
-        unstable.droidcam	
-        lutris
-        unstable.wine
-        discord
-        unstable.steam
-        thunderbird
-        unstable.vscode
-        unstable.terraform
-        pulseaudioFull
-        # Console mixer
-        unstable.pulsemixer
-        # Equalizer on sterids
-        unstable.easyeffects
-        unstable.ldacbt
-        unstable.fprintd
-        fwupd
-        obs-studio
-        unstable.v4l-utils
-        unstable.buttercup-desktop
-        unstable.keepass
-        git
-        rpi-imager
-        angryipscanner
-        drawio
-        libreoffice
-        ventoy-full
-        usbutils
-        mullvad-vpn
-        mullvad
-        krita
-        nextcloud-client
-        ungoogled-chromium
-        opentabletdriver
-        aws-sso-cli
+      firefox
+      libnfs
+      nfs-utils
+      notesnook
+      joplin-desktop
+      android-tools
+      unstable.droidcam
+      lutris
+      unstable.wine
+      discord
+      unstable.steam
+      thunderbird
+      unstable.vscode
+      unstable.terraform
+      pulseaudioFull
+      # Console mixer
+      unstable.pulsemixer
+      # Equalizer on steroids
+      unstable.easyeffects
+      unstable.ldacbt
+      unstable.fprintd
+      fwupd
+      obs-studio
+      unstable.v4l-utils
+      unstable.buttercup-desktop
+      unstable.keepass
+      git
+      unstable.rpi-imager
+      angryipscanner
+      drawio
+      libreoffice
+      ventoy-full
+      usbutils
+      mullvad-vpn
+      mullvad
+      krita
+      nextcloud-client
+      ungoogled-chromium
+      opentabletdriver
+      aws-sso-cli
+      oversteer
     ];
   };
 
-    services.mullvad-vpn = {
-    enable = true;
-  };
+  services.mullvad-vpn.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Enable and install Steam + prerequisities
-  hardware.steam-hardware = {
-    enable = true;
-  };
+  # Enable and install Steam + prerequisites
+  hardware.steam-hardware.enable = true;
 
   programs.steam = {
     enable = true;
@@ -222,102 +229,82 @@ hardware.bluetooth.settings = {
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
   };
 
-  
   # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "bakanura";
+  services.xserver.displayManager.autoLogin = {
+    enable = true;
+    user = "bakanura";
+  };
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-	pkgs.nfs-utils
-	pkgs.firefox
-	(pkgs.wrapFirefox (pkgs.firefox-unwrapped.override { pipewireSupport = true;}) {})
-	pkgs.android-tools
-	pkgs.droidcam
-	pkgs.steam
-	pkgs.v4l-utils
-	pkgs.angryipscanner
-  pkgs.ldacbt
-	pkgs.fprintd
-	pkgs.fwupd
-	pkgs.obs-studio
-	pkgs.buttercup-desktop
-	pkgs.joplin-desktop  	
-	pkgs.git
-	pkgs.libnfs
-  pkgs.rpi-imager
-  pkgs.ventoy-full
-  pkgs.krita
-	(pkgs.wrapOBS {
-	    	plugins = with pkgs.obs-studio-plugins; [
-	      	wlrobs
-	      	obs-backgroundremoval
-	      	obs-pipewire-audio-capture
-	    	];
-  	})
-	(vscode-with-extensions.override {
-	    vscodeExtensions = with vscode-extensions; [
-	      bbenoist.nix
-	      ms-python.python
-	      ms-azuretools.vscode-docker
-	      ms-vscode-remote.remote-ssh
-	    ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-	      {
-	        name = "remote-ssh-edit";
-	        publisher = "ms-vscode-remote";
-	        version = "0.47.2";
-	        sha256 = "1hp6gjh4xp2m1xlm1jsdzxw9d8frkiidhph6nvl24d0h8z34w49g";
-	      }
-	    ];
-	  })
-	pkgs.go
-	pkgs.terraform
-	pkgs.pulseaudioFull
-	pkgs.notesnook
-  pkgs.drawio
-  pkgs.libreoffice
-  pkgs.usbutils
-  pkgs.mullvad-vpn
-  pkgs.mullvad
-  pkgs.nextcloud-client
-  pkgs.ungoogled-chromium
-  pkgs.opentabletdriver
-  pkgs.aws-sso-cli
-  (pkgs.discord.override {
-  # remove any overrides that you don't want
-  withOpenASAR = true;
-  withVencord = true;
-})
-
-  pkgs.betterdiscordctl
+    pkgs.nfs-utils
+    pkgs.firefox
+    (pkgs.wrapFirefox (pkgs.firefox-unwrapped.override { pipewireSupport = true;}) {})
+    pkgs.android-tools
+    pkgs.droidcam
+    pkgs.steam
+    pkgs.v4l-utils
+    pkgs.angryipscanner
+    pkgs.ldacbt
+    pkgs.fprintd
+    pkgs.fwupd
+    pkgs.obs-studio
+    pkgs.buttercup-desktop
+    pkgs.joplin-desktop
+    pkgs.git
+    pkgs.libnfs
+    pkgs.rpi-imager
+    pkgs.ventoy-full
+    pkgs.krita
+    (pkgs.wrapOBS {
+      plugins = with pkgs.obs-studio-plugins; [
+        wlrobs
+        obs-backgroundremoval
+        obs-pipewire-audio-capture
+      ];
+    })
+    (vscode-with-extensions.override {
+      vscodeExtensions = with vscode-extensions; [
+        bbenoist.nix
+        ms-python.python
+        ms-azuretools.vscode-docker
+        ms-vscode-remote.remote-ssh
+      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "remote-ssh-edit";
+          publisher = "ms-vscode-remote";
+          version = "0.47.2";
+          sha256 = "1hp6gjh4xp2m1xlm1jsdzxw9d8frkiidhph6nvl24d0h8z34w49g";
+        }
+      ];
+    })
+    pkgs.go
+    pkgs.terraform
+    pkgs.pulseaudioFull
+    pkgs.notesnook
+    pkgs.drawio
+    pkgs.libreoffice
+    pkgs.usbutils
+    pkgs.mullvad-vpn
+    pkgs.mullvad
+    pkgs.nextcloud-client
+    pkgs.ungoogled-chromium
+    pkgs.opentabletdriver
+    pkgs.oversteer
+    pkgs.aws-sso-cli
+    (pkgs.discord.override {
+      # remove any overrides that you don't want
+      withOpenASAR = true;
+      withVencord = true;
+    })
+    pkgs.betterdiscordctl
   ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -326,5 +313,5 @@ hardware.bluetooth.settings = {
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
-
 }
+
